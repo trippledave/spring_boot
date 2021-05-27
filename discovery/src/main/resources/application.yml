@@ -1,0 +1,28 @@
+server:
+  port: 8761
+  tomcat.accesslog.enabled: true
+  
+spring:
+    application:
+        name: discovery
+
+eureka:
+    instance:
+        hostname: localhost
+    client:
+        registerWithEureka: false
+        fetchRegistry: false
+#        serviceUrl:
+#            defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+logging:
+    level:
+        com:
+            netflix:
+                eureka: OFF
+            discovery: OFF
+
+management:
+    endpoint:
+        health:
+            show-details: always

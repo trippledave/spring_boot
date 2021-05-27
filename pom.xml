@@ -22,10 +22,6 @@
     <modules>
         <module>discovery</module><!--<module>8761</module>--> 
         <module>gateway</module><!--<module>8080</module>--> 
-        <module>CASA</module>
-        <module>common</module> 
-        <module>demo3</module><!--<module>8083</module>--> 
-        <module>web-rtc</module><!--<module>8084</module>--> 
     </modules>
 
     <dependencies>  <!-- only dependencies for all services, but bear in mind that an update might mean that all depending services also have to be updated -->
