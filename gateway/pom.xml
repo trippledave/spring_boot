@@ -15,6 +15,11 @@
 	<name>gateway</name>
 	<description>entrypoint for all requests</description>
 
+ <build>
+   <finalName>gateway.jar</finalName>
+ </build>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
