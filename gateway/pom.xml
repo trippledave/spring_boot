@@ -16,7 +16,7 @@
 	<description>entrypoint for all requests</description>
 
  <build>
-   <finalName>gateway.jar</finalName>
+   <finalName>gateway</finalName>
  </build>
 
 
