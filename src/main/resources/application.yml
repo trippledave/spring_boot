@@ -1,0 +1,99 @@
+server:
+    port: ${SERVER_PORT:8080} 
+
+spring:
+    application.name: gateway
+    cloud:
+        gateway:
+            discovery.locator:
+                enabled: true
+                lowerCaseServiceId: true
+                predicates:
+                    - name: Path
+                      args:
+                          pattern: "'/api/*/'+serviceId+'/**'"
+                filters:
+                    - name: RewritePath
+                      args:
+                          regexp: "'api/(?<apiVersion>.*)/'+serviceId+'/(?<remaining>.*)'"
+                          replacement: "'/api/${apiVersion}/${remaining}'"
+               # include-expression: metadata['backend','stream'] == 'true'            
+            #for logging
+            httpclient: 
+                wiretap: true
+            httpserver:
+                wiretap: true
+                
+            routes:
+            - id: discovery
+              uri: http://localhost:8761
+              predicates:
+                - name: Path
+                  args:
+                    pattern: "/discovery/**"
+              filters:
+                    - name: RewritePath
+                      args:
+                          regexp: /discovery/(?<remaining>.*)
+                          replacement: /${remaining}
+                        
+            - id: casa-api 
+              uri: http://${MONOLITHIC_CASA_SERVER:localhost:8081}
+              predicates:
+                - name: Path
+                  args:
+                    pattern: "/api/**"
+              filters:
+                    - name: RewritePath
+                      args:
+                          regexp: /api/(?<remaining>.*)
+                          replacement: /casa/api/${remaining}
+              
+            - id: casa-internal-api
+            #prevent leaking unprotected routes to outside
+              uri: no://op
+              predicates:
+              - Path=/casa/internal-api/**
+              
+            - id: casa
+              uri: http://${MONOLITHIC_CASA_SERVER:localhost:8081}
+              predicates:
+              - Path=/casa/**
+              
+            - id: ui
+                          #route to ui server
+              uri: http://${FRONTEND_SERVER:localhost:4200}
+              predicates:
+                - name: Path
+                  args:
+                    pattern: "/**"
+                          
+        #as a webclient only allow clients inside docker  ## this is also needed in the demo applications to set this stuff, webclient is in demo-apps
+        loadbalancer: 
+            configurations: zone-preference
+            zone: docker
+        
+eureka:
+    client:
+        healthcheck:
+            enabled: true
+        serviceUrl:
+            defaultZone: http://${EUREKA_SERVER:localhost:8761/eureka}
+    instance.hostname: localhost
+            
+management:
+    endpoint:
+        health.show-details: always
+        gateway.enabled: true
+    endpoints.web.exposure.include: info, health, gateway
+
+logging:
+    level:
+        reactor:
+            # on DEBUG it logs file contents
+            netty: DEBUG 
+        org:
+            springframework:
+                cloud:
+                    gateway: TRACE
+                  
