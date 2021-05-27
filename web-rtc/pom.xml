@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+        
+    <parent>
+        <groupId>de.cibek.ms-casa</groupId>
+        <artifactId>rest-microservices</artifactId>
+        <version>1.0.0.BUILD-SNAPSHOT</version>
+    </parent>
+        
+    <groupId>de.cibek.ms-casa</groupId>
+    <artifactId>MS_CASA_WebRTC</artifactId>
+    <!--<version>0.0.1-SNAPSHOT</version>-->
+    <name>MS_CASA_WebRTC</name>
+        
+    <description>CASA Video Communicator </description>
+        
+		 <build>
+   <finalName>web-rtc</finalName>
+ </build>
+ 
+    <dependencies>
+            
+        <dependency>
+            <groupId>de.cibek.ms-casa</groupId>
+            <artifactId>common-session</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+            
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+        </dependency>
+        
+    </dependencies>
+</project>

@@ -1,0 +1,55 @@
+spring:
+    application:
+        name: webRtc
+    #stops Finished Spring Data repository scanning in 6ms. Found 0 Redis repository interfaces:
+    data.redis.repositories.enabled: false 
+    datasource:
+        url: jdbc:mysql://${MYSQL_HOST:localhost:3306}/casa_webrtc?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+        username: root
+        password: root
+    jpa:
+        hibernate.ddl-auto: create-drop #while in dev, later use liquibase
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        show-sql: false
+    redis.host: ${REDIS_HOST:localhost}
+    cloud:
+                #as a webclient only allow clients inside docker  ## this is also needed in the demo applications to set this stuff, webclient is in demo-apps
+        loadbalancer: 
+            configurations: zone-preference
+            zone: docker
+        stream:
+            default.contentType: application/json
+            bindings:
+              input:
+                destination: userEvents
+                binder: kafka
+                group: receivers
+        kafka.binder:
+            replicationFactor: 1
+            autoAddPartitions: true
+          
+server:
+    port: ${SERVER_PORT:8084} 
+        
+eureka:
+    client:
+        healthcheck.enabled: true
+        serviceUrl.defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+        eureka-connection-idle-timeout-seconds: 10
+        instance-info-replication-interval-seconds: 20
+    instance:
+        #set region, so that other client can filter the zones
+#        metadataMap.zone: docker   # disable when this is not in docker with seperate profile (default is not docker, and docker can set what it wants)
+        lease-renewal-interval-in-seconds: 5
+        prefer-ip-address: true
+        ip-address: ${HOST:localhost}
+        non-secure-port: ${SERVER_PORT:8083} 
+        
+            
+management:
+    endpoint.health.show-details: always
+    endpoints.web.exposure.include: info, health, conditions, configprops, metrics, mappings
+    
+logging.level.org.springframework.security: DEBUG
+logging.level.org.springframework.web: DEBUG
+logging.level.de.cibek.casa: DEBUG

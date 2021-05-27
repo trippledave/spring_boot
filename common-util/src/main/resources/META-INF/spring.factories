@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+de.cibek.mscasa.common.config.WebClientConfig,\
+de.cibek.mscasa.common.client.UserManagementApiClient,\
+de.cibek.mscasa.common.security.service.AuthenticatedUserService
