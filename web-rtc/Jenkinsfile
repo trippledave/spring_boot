@@ -1,0 +1,47 @@
+pipeline {
+   agent any
+   tools { 
+        maven 'maven' 
+        jdk 'java 8' 
+    }
+   options {
+        buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
+   }
+   stages {
+       stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                ''' 
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                //git 'https://github.com/trippledave/spring_boot'
+                sh '''
+                    mvn -Dmaven.test.failure.ignore=true -DskipTests=true clean package
+                '''
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    archiveArtifacts 'web-rtc/target/*.jar'
+                }
+            }
+        }
+        
+        stage('Delivery') {
+         steps {
+            dir("web-rtc") {
+                 sh 'docker build . -t davedannstadt/web-rtc'
+                 sh 'docker push davedannstadt/web-rtc:latest'
+            }
+         }
+      }
+    }
+}
